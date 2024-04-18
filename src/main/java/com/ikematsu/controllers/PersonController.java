@@ -1,6 +1,7 @@
 package com.ikematsu.controllers;
 
-import com.ikematsu.data.DTO.V1.PersonDTO;
+import com.ikematsu.data.dto.v1.PersonDTO;
+import com.ikematsu.data.dto.v2.PersonDTOV2;
 import com.ikematsu.services.PersonServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -33,6 +34,11 @@ public class PersonController {
         return service.create(person);
     }
 
+    @PostMapping(value = "/v2", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public PersonDTOV2 createV2(@RequestBody PersonDTOV2 person) {
+        return service.createV2(person);
+    }
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public PersonDTO update(@RequestBody PersonDTO person) {

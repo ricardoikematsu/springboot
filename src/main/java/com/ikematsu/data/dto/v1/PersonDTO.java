@@ -1,4 +1,4 @@
-package com.ikematsu.data.DTO.V1;
+package com.ikematsu.data.dto.v1;
 
 import java.io.Serial;
 import java.io.Serializable;

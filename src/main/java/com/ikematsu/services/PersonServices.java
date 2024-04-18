@@ -1,8 +1,10 @@
 package com.ikematsu.services;
 
-import com.ikematsu.data.DTO.V1.PersonDTO;
+import com.ikematsu.data.dto.v1.PersonDTO;
+import com.ikematsu.data.dto.v2.PersonDTOV2;
 import com.ikematsu.exceptions.ResourceNotFoundException;
 import com.ikematsu.mapper.DozerMapper;
+import com.ikematsu.mapper.custom.PersonMapper;
 import com.ikematsu.model.Person;
 import com.ikematsu.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class PersonServices {
 
     @Autowired
     PersonRepository repository;
+
+    @Autowired
+    PersonMapper mapper;
 
     public List<PersonDTO> findAll() {
 
@@ -40,6 +45,14 @@ public class PersonServices {
         logger.info("Creating one person!");
         var entity = DozerMapper.parseObject(person, Person.class);
         var dto =  DozerMapper.parseObject(repository.save(entity), PersonDTO.class);
+        return dto;
+    }
+
+    public PersonDTOV2 createV2(PersonDTOV2 person) {
+
+        logger.info("Creating one person with V2!");
+        var entity = mapper.convertVoTOEntity(person);
+        var dto =  mapper.convertEntityToDto(repository.save(entity));
         return dto;
     }
 
