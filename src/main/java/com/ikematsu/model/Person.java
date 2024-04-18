@@ -1,5 +1,6 @@
 package com.ikematsu.model;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 import jakarta.persistence.Column;
@@ -13,6 +14,7 @@ import jakarta.persistence.Table;
 @Table(name = "person")
 public class Person implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
@@ -115,10 +117,7 @@ public class Person implements Serializable {
         } else if (!id.equals(other.id))
             return false;
         if (lastName == null) {
-            if (other.lastName != null)
-                return false;
-        } else if (!lastName.equals(other.lastName))
-            return false;
-        return true;
+            return other.lastName == null;
+        } else return lastName.equals(other.lastName);
     }
 }
