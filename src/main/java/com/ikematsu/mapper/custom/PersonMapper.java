@@ -21,7 +21,7 @@ public class PersonMapper {
     }
 
 
-    public Person convertVoTOEntity(PersonDTOV2 person) {
+    public Person convertDtoTOEntity(PersonDTOV2 person) {
         Person entity = new Person();
         entity.setId(person.getId());
         entity.setAddress(person.getAddress());
