@@ -1,4 +1,4 @@
-package com.ikematsu.config;
+package com.ikematsu.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
