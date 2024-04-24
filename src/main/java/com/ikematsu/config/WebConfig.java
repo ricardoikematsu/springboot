@@ -1,4 +1,4 @@
-package com.ikematsu.configs;
+package com.ikematsu.config;
 
 import com.ikematsu.serialization.converter.YamlJackson2HttpMesageConverter;
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.ikematsu.configs;
+package com.ikematsu.config;
 
 public class TestConfigs {
     public static final int SERVER_PORT = 8888;
