@@ -1,6 +1,6 @@
 package com.ikematsu.integrationtests.swagger;
 
-import com.ikematsu.config.TestConfigs;
+import com.ikematsu.configs.TestConfigs;
 import com.ikematsu.integrationtests.testcontainers.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,8 +1,7 @@
-package com.ikematsu.config;
+package com.ikematsu.configs;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import com.ikematsu.security.jwt.JwtTokenFilter;
+import com.ikematsu.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder.SecretKeyFactoryAlgorithm;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.ikematsu.security.jwt.JwtConfigurer;
-import com.ikematsu.security.jwt.JwtTokenProvider;
+import java.util.HashMap;
+import java.util.Map;
 
 @EnableWebSecurity
 @Configuration
@@ -48,9 +48,12 @@ public class SecurityConfig {
 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		JwtTokenFilter customFilter = new JwtTokenFilter(tokenProvider);
+
 		return http
-				.httpBasic().disable()
+				.httpBasic(AbstractHttpConfigurer::disable)
 				.csrf(AbstractHttpConfigurer::disable)
+				.addFilterBefore(customFilter, UsernamePasswordAuthenticationFilter.class)
 				.sessionManagement(
 						session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(
@@ -64,10 +67,7 @@ public class SecurityConfig {
 								.requestMatchers("/api/**").authenticated()
 								.requestMatchers("/users").denyAll()
 				)
-				.cors()
-				.and()
-				.apply(new JwtConfigurer(tokenProvider))
-				.and()
+				.cors(cors -> {})
 				.build();
 	}
 }
