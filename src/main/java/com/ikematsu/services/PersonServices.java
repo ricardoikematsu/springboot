@@ -2,17 +2,20 @@ package com.ikematsu.services;
 
 import com.ikematsu.controllers.PersonController;
 import com.ikematsu.data.dto.v1.PersonDTO;
-import com.ikematsu.data.dto.v2.PersonDTOV2;
 import com.ikematsu.exceptions.RequiredObjectIsNullException;
 import com.ikematsu.exceptions.ResourceNotFoundException;
 import com.ikematsu.mapper.DozerMapper;
-import com.ikematsu.mapper.custom.PersonMapper;
 import com.ikematsu.model.Person;
 import com.ikematsu.repositories.PersonRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -27,17 +30,48 @@ public class PersonServices {
     PersonRepository repository;
 
     @Autowired
-    PersonMapper mapper;
+    PagedResourcesAssembler<PersonDTO> assembler;
 
-    public List<PersonDTO> findAll() {
+    public PagedModel<EntityModel<PersonDTO>> findAll(Pageable pageable) {
 
         logger.info("Finding all people!");
 
-        var persons = DozerMapper.parseListObjects(repository.findAll(), PersonDTO.class);
-        persons
-                .stream()
-                .forEach(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
-        return persons;
+        var personPage = repository.findAll(pageable);
+
+        var personDtosPage = personPage.map(p -> DozerMapper.parseObject(p, PersonDTO.class));
+        personDtosPage.map(
+                p -> p.add(
+                        linkTo(methodOn(PersonController.class)
+                                .findById(p.getKey())).withSelfRel()));
+
+        Link link = linkTo(
+                methodOn(PersonController.class)
+                        .findAll(pageable.getPageNumber(),
+                                pageable.getPageSize(),
+                                "asc")).withSelfRel();
+
+        return assembler.toModel(personDtosPage, link);
+    }
+
+    public PagedModel<EntityModel<PersonDTO>> findPersonByName(String firstname, Pageable pageable) {
+
+        logger.info("Finding people by id!");
+
+        var personPage = repository.findPersonByName(firstname, pageable);
+
+        var personDtosPage = personPage.map(p -> DozerMapper.parseObject(p, PersonDTO.class));
+        personDtosPage.map(
+                p -> p.add(
+                        linkTo(methodOn(PersonController.class)
+                                .findById(p.getKey())).withSelfRel()));
+
+        Link link = linkTo(
+                methodOn(PersonController.class)
+                        .findAll(pageable.getPageNumber(),
+                                pageable.getPageSize(),
+                                "asc")).withSelfRel();
+
+        return assembler.toModel(personDtosPage, link);
     }
 
     public PersonDTO findById(Long id) {
@@ -61,14 +95,14 @@ public class PersonServices {
         return dto;
     }
 
-    public PersonDTOV2 createV2(PersonDTOV2 person) {
-
-        if (person == null ) throw new RequiredObjectIsNullException();
-        logger.info("Creating one person with V2!");
-        var entity = mapper.convertDtoTOEntity(person);
-        var dto =  mapper.convertEntityToDto(repository.save(entity));
-        return dto;
-    }
+//    public PersonDTOV2 createV2(PersonDTOV2 person) {
+//
+//        if (person == null ) throw new RequiredObjectIsNullException();
+//        logger.info("Creating one person with V2!");
+//        var entity = mapper.convertDtoTOEntity(person);
+//        var dto =  mapper.convertEntityToDto(repository.save(entity));
+//        return dto;
+//    }
 
     public PersonDTO update(PersonDTO person) {
 
@@ -84,6 +118,19 @@ public class PersonServices {
 
         var dto =  DozerMapper.parseObject(repository.save(entity), PersonDTO.class);
         dto.add(linkTo(methodOn(PersonController.class).findById(dto.getKey())).withSelfRel());
+        return dto;
+    }
+
+    @Transactional
+    public PersonDTO disblePerson(Long id) {
+
+        logger.info("Disabling one person!");
+
+        repository.disablePerson(id);
+        var entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID!"));
+        var dto = DozerMapper.parseObject(entity, PersonDTO.class);
+        dto.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
         return dto;
     }
 
