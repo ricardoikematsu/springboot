@@ -1,7 +1,7 @@
 server:
   port: 80
 cors:
-  originPatterns: http://localhost:3000,http://localhost:8080,https://ikematsu.com.br
+  originPatterns: http://localhost:3000,http://localhost:8080,https://ikematsu.com.br,http://localhost:8080
 file:
   upload-dir: /Code/UploadDir
 security:
