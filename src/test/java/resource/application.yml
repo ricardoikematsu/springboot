@@ -1,7 +1,7 @@
 server:
   port: 8888
 cors:
-  originPatterns: http://localhost:3000,http://localhost:8080,https://ikematsu.com.br
+  originPatterns: http://localhost:3000,http://localhost:8080,https://ikematsu.com.br,http://localhost:80
 file:
   upload-dir: /home/runner/work/rest_with_springboot/UploadDir
 security:
