@@ -7,6 +7,7 @@ import com.ikematsu.data.dto.v1.security.TokenDTO;
 import com.ikematsu.integrationtests.controller.withyaml.mapper.YMLMapper;
 import com.ikematsu.integrationtests.dto.AccountCredentialsDTO;
 import com.ikematsu.integrationtests.dto.PersonDTO;
+import com.ikematsu.integrationtests.dto.pagedmodels.PagedModelPerson;
 import com.ikematsu.integrationtests.dto.wrappers.WrapperPersonDTO;
 import com.ikematsu.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
@@ -288,51 +289,50 @@ public class PersonControllerYamlTest extends AbstractIntegrationTest {
                                                 ContentType.TEXT)))
                 .contentType(TestConfigs.CONTENT_TYPE_YML)
                 .accept(TestConfigs.CONTENT_TYPE_YML)
+                .queryParams("page", 3, "size", 10, "direction", "asc")
                 .when()
                 .get()
                 .then()
                 .statusCode(200)
                 .extract()
                 .body()
-                .as(WrapperPersonDTO.class, objectMapper);
+                .as(PagedModelPerson.class, objectMapper);
 
-        var people = wrapper.getEmbedded().getPersons();
+        var people = wrapper.getContent();
 
-        if(people != null && people.isEmpty()) {
+        PersonDTO foundPersonOne = people.get(0);
 
-            PersonDTO foundPersonOne = people.get(0);
+        assertNotNull(foundPersonOne.getId());
+        assertNotNull(foundPersonOne.getFirstName());
+        assertNotNull(foundPersonOne.getLastName());
+        assertNotNull(foundPersonOne.getAddress());
+        assertNotNull(foundPersonOne.getGender());
 
-            assertNotNull(foundPersonOne.getId());
-            assertNotNull(foundPersonOne.getFirstName());
-            assertNotNull(foundPersonOne.getLastName());
-            assertNotNull(foundPersonOne.getAddress());
-            assertNotNull(foundPersonOne.getGender());
-            assertTrue(foundPersonOne.getEnabled());
+        assertTrue(foundPersonOne.getEnabled());
 
-            assertEquals(1, foundPersonOne.getId());
+        assertEquals(677, foundPersonOne.getId());
 
-            assertEquals("Ayrton", foundPersonOne.getFirstName());
-            assertEquals("Senna", foundPersonOne.getLastName());
-            assertEquals("São Paulo", foundPersonOne.getAddress());
-            assertEquals("Male", foundPersonOne.getGender());
+        assertEquals("Alic", foundPersonOne.getFirstName());
+        assertEquals("Terbrug", foundPersonOne.getLastName());
+        assertEquals("3 Eagle Crest Court", foundPersonOne.getAddress());
+        assertEquals("Male", foundPersonOne.getGender());
 
-            PersonDTO foundPersonSix = people.get(5);
+        PersonDTO foundPersonSix = people.get(5);
 
-            assertNotNull(foundPersonSix.getId());
-            assertNotNull(foundPersonSix.getFirstName());
-            assertNotNull(foundPersonSix.getLastName());
-            assertNotNull(foundPersonSix.getAddress());
-            assertNotNull(foundPersonSix.getGender());
+        assertNotNull(foundPersonSix.getId());
+        assertNotNull(foundPersonSix.getFirstName());
+        assertNotNull(foundPersonSix.getLastName());
+        assertNotNull(foundPersonSix.getAddress());
+        assertNotNull(foundPersonSix.getGender());
 
-            assertTrue(foundPersonSix.getEnabled());
+        assertTrue(foundPersonSix.getEnabled());
 
-            assertEquals(9, foundPersonSix.getId());
+        assertEquals(911, foundPersonSix.getId());
 
-            assertEquals("Nelson", foundPersonSix.getFirstName());
-            assertEquals("Mvezo", foundPersonSix.getLastName());
-            assertEquals("Mvezo – South Africa", foundPersonSix.getAddress());
-            assertEquals("Male", foundPersonSix.getGender());
-        }
+        assertEquals("Allegra", foundPersonSix.getFirstName());
+        assertEquals("Dome", foundPersonSix.getLastName());
+        assertEquals("57 Roxbury Pass", foundPersonSix.getAddress());
+        assertEquals("Female", foundPersonSix.getGender());
     }
 
     @Test
