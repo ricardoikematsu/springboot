@@ -1,20 +1,12 @@
 package com.ikematsu.integrationtests.controller.withyaml;
 
-import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertNotNull;
-
-import org.junit.jupiter.api.*;
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-
 import com.ikematsu.configs.TestConfigs;
 import com.ikematsu.integrationtests.controller.withyaml.mapper.YMLMapper;
-import com.ikematsu.integrationtests.testcontainers.AbstractIntegrationTest;
 import com.ikematsu.integrationtests.dto.AccountCredentialsDTO;
 import com.ikematsu.integrationtests.dto.TokenDTO;
+import com.ikematsu.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.config.RestAssuredConfig;
@@ -23,6 +15,11 @@ import io.restassured.filter.log.RequestLoggingFilter;
 import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(OrderAnnotation.class)

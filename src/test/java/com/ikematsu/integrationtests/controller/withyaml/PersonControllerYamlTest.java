@@ -8,7 +8,6 @@ import com.ikematsu.integrationtests.controller.withyaml.mapper.YMLMapper;
 import com.ikematsu.integrationtests.dto.AccountCredentialsDTO;
 import com.ikematsu.integrationtests.dto.PersonDTO;
 import com.ikematsu.integrationtests.dto.pagedmodels.PagedModelPerson;
-import com.ikematsu.integrationtests.dto.wrappers.WrapperPersonDTO;
 import com.ikematsu.integrationtests.testcontainers.AbstractIntegrationTest;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
